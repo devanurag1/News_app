@@ -17,36 +17,38 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+const spinkit2 = SpinKitFadingCircle(
+  color: Colors.amber,
+  size: 50.0,
+);
+
 class _HomeScreenState extends State<HomeScreen> {
   final format = DateFormat('MMMM dd, yyyy');
 
   @override
   void initState() {
     super.initState();
-    context.read<NewsBloc>().add(FetchNewsChannelHeadlines('bbc-news'));
-    context.read<NewsBloc>().add(NewsCategories('general'));
+    context.read<NewsBloc>()..add(FetchNewsChannelHeadlines('bbc-news'));
+    context.read<NewsBloc>()..add(NewsCategories('general'));
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final height = MediaQuery.sizeOf(context).height;
-
+    final width = MediaQuery.sizeOf(context).width * 1;
+    final height = MediaQuery.sizeOf(context).height * 1;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(59),
-        child: HomeAppBarWidget(),
-      ),
+      appBar:
+          PreferredSize(preferredSize: Size(0, 59), child: HomeAppBarWidget()),
       body: ListView(
         children: [
           SizedBox(
             height: height * .55,
             width: width,
             child: BlocBuilder<NewsBloc, NewsState>(
-              builder: (context, state) {
+              builder: (BuildContext context, state) {
                 switch (state.status) {
                   case Status.initial:
-                    return const Center(
+                    return Center(
                       child: SpinKitCircle(
                         size: 50,
                         color: Colors.blue,
@@ -74,32 +76,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(20),
-            child: SingleChildScrollView(
-              child: BlocBuilder<NewsBloc, NewsState>(
-                builder: (context, state) {
-                  switch (state.categoriesStatus) {
-                    case Status.initial:
-                      return const Center(
-                        child: SpinKitCircle(
-                          size: 50,
-                          color: Colors.blue,
-                        ),
-                      );
-                    case Status.failure:
-                      return Text(state.categoriesMessage.toString());
-                    case Status.success:
-                      return ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: state.newsCategoriesList!.articles!.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          DateTime dateTime = DateTime.parse(state
-                              .newsCategoriesList!.articles![index].publishedAt
-                              .toString());
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: Card(
-                              elevation: 5,
+            child: BlocBuilder<NewsBloc, NewsState>(
+              builder: (BuildContext context, state) {
+                switch (state.categoriesStatus) {
+                  case Status.initial:
+                    return Center(
+                      child: SpinKitCircle(
+                        size: 50,
+                        color: Colors.blue,
+                      ),
+                    );
+                  case Status.failure:
+                    return Text(state.categoriesMessage.toString());
+                  case Status.success:
+                    return ListView.builder(
+                      itemCount: state.newsCategoriesList!.articles!.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        DateTime dateTime = DateTime.parse(state
+                            .newsCategoriesList!.articles![index].publishedAt
+                            .toString());
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: Material(
+                            elevation: 4, // Adds elevation for shadow effect
+                            borderRadius: BorderRadius.circular(15),
+                            shadowColor: Colors.black.withOpacity(0.2),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
                               child: Row(
                                 children: [
                                   ClipRRect(
@@ -112,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       height: height * .18,
                                       width: width * .3,
                                       placeholder: (context, url) => Container(
-                                        child: const Center(
+                                        child: Center(
                                           child: SpinKitCircle(
                                             size: 50,
                                             color: Colors.blue,
@@ -120,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       errorWidget: (context, url, error) =>
-                                          const Icon(
+                                          Icon(
                                         Icons.error_outline,
                                         color: Colors.red,
                                       ),
@@ -129,8 +134,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Expanded(
                                     child: Container(
                                       height: height * .18,
-                                      padding: const EdgeInsets.only(left: 15),
+                                      padding: EdgeInsets.only(left: 15),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             state.newsCategoriesList!
@@ -143,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
-                                          const Spacer(),
+                                          Spacer(),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -171,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                             ],
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -179,12 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                             ),
-                          );
-                        },
-                      );
-                  }
-                },
-              ),
+                          ),
+                        );
+                      },
+                    );
+                }
+              },
             ),
           ),
         ],
@@ -193,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-const spinkit2 = SpinKitFadingCircle(
+const spinKit2 = SpinKitFadingCircle(
   color: Colors.amber,
   size: 50,
 );
